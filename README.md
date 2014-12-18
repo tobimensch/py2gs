@@ -160,7 +160,7 @@ Here's the diff of the manual changes:
 +init
 +    Gtk.init(ref args)
 +    var win = new StackWindow()
-+    win.connect("delete-event", Gtk.main_quit)
++    win.destroy.connect(Gtk.main_quit)
 +    win.show_all()
 +    Gtk.main()
 ```
