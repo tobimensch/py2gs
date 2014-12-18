@@ -122,7 +122,48 @@ init
 
 ```
 
-The changes that were needed to make this work are left as an exercise for the reader.
+Here's the diff of the manual changes:
+```
+ class StackWindow : Gtk.Window
+ 
+     init
+-        Gtk.Window.__init__( title="Stack Demo")
++        //Gtk.Window.__init__( title="Stack Demo")
+         set_border_width(10)
+ 
+-        var vbox = new Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
++        var vbox = new Gtk.Box(Gtk.Orientation.VERTICAL, 6)
+         add(vbox)
+ 
+         var stack = new Gtk.Stack()
+         stack.set_transition_type(Gtk.StackTransitionType.SLIDE_LEFT_RIGHT)
+         stack.set_transition_duration(1000)
+         
+-        var checkbutton = new Gtk.CheckButton("Click me!")
++        var checkbutton = new Gtk.CheckButton()
++        checkbutton.label= "Click me!"
+         stack.add_titled(checkbutton, "check", "Check Button")
+         
+-        var label = new Gtk.Label()
++        var label = new Gtk.Label("")
+         label.set_markup("<big>A fancy label</big>")
+         stack.add_titled(label, "label", "A label")
+ 
+@@ -25,8 +26,10 @@
+         vbox.pack_start(stack_switcher, true, true, 0)
+         vbox.pack_start(stack, true, true, 0)
+ 
+-var win = new StackWindow()
+-win.connect("delete-event", Gtk.main_quit)
+-win.show_all()
+-Gtk.main()
++init
++    Gtk.init(ref args)
++    var win = new StackWindow()
++    win.connect("delete-event", Gtk.main_quit)
++    win.show_all()
++    Gtk.main()
+```
 
 How to run py2gs
 ================
