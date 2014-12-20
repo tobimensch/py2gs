@@ -114,12 +114,20 @@ _sed 's/^\(\s*\)\([[:alnum:]|_]*\)\s*=\s*\([[:alpha:]|_]\)/\1var \2 = new \3/'
 #summary: very greedy
 _sed 's/False/false/g'
 _sed 's/True/true/g'
+_sed 's/None/null/g'
 
 #change all function/method parameters to have
 #static typing syntax...
 #defaulting everything to string
 #obviously there's manual fixing needed
 _sed 's/\(.*\sdef\s.*(\)\([[:alnum:]]\+\)\(,.*\)/\1\2 : string \3/'
+
+#change .new_from... to .from
+_sed 's/\.new_from_/\.from_/'
+_sed 's/\.new_with_/\.with_/'
+
+#change Gtk.STOCK_ to Gtk.Stock.
+#_sed 's/Gtk\.STOCK_/Gtk\.Stock\./'
 
 #add [indent=4] at beginning of file
 sed -i '1s/^/\[indent=4\]\n/' $FILE.tmp
