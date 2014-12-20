@@ -54,9 +54,11 @@ _sed 's/\(.*\)def __init__(self, \*\*kwargs):/\1init/'
  
 #removes self, from def func(self,)...
 _sed 's/\(.*def.*(\)self,\s*\(.*\)/\1\2/'
+_sed 's/\(.*def.*(\)self)/\1)/'
 
 #removes self. calls
-_sed 's/\(.*\s\)self\.\(.*\)/\1\2/'
+#_sed 's/\(.*\s\)self\.\(.*\)/\1\2/'
+_perl -pe 's/(\s)self\./\1/g'
 _sed 's/\(.*(\)self\.\(.*\)/\1\2/'
 _sed 's/\(.*,\)self\.\(.*\)/\1\2/'
 
@@ -125,6 +127,15 @@ _sed 's/\(.*\sdef\s.*(\)\([[:alnum:]]\+\)\(,.*\)/\1\2 : string \3/'
 #change .new_from... to .from
 _sed 's/\.new_from_/\.from_/'
 _sed 's/\.new_with_/\.with_/'
+
+#convert .connect("signal",callback, parameters) into
+#   .signal += def()
+#       callback(parameters) 
+#with parameter
+_perl -0777 -pe "s/^(\h*)([[:alnum:]|_|\.]*?)\.connect\(\s*\"([[:alpha:]]*)\"\s*\,\s*([[:alpha:]|_|\.]*)\s*\,[\s]*([[:alnum:]|_|\.]*)\s*\)/\1\2\.\3 \+= def\(\)\n\1    \4\(\5\)/sgm"
+#without parameter
+_perl -0777 -pe "s/^(\h*)([[:alnum:]|_|\.]*?)\.connect\(\s*\"([[:alpha:]|-]*)\"\s*\,\s*([[:alpha:]|_|\.]*)\s*\)/\1\2\.\3 \+= def\(\)\n\1    \4\(\)/sgm"
+_sed 's/delete-event/destroy/'
 
 #change Gtk.STOCK_ to Gtk.Stock.
 #_sed 's/Gtk\.STOCK_/Gtk\.Stock\./'
