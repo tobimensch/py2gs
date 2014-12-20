@@ -76,11 +76,16 @@ _sed 's/\(for\s.*\):/\1/'
 #remove : behind while loops
 _sed 's/\(while\s.*\):/\1/'
 
+#convert ''' ''' literals into multiline """ """ literals
+#if preceded by operator
+_perl -0777 -pe "s/(=)([^\n]*)(''')(.*?)(''')/\1\2\"\"\"\4\"\"\"/sg"
+
 #convert ''' ''' literals into /* */ comments
 #this assumes that comments is the most common
 #use case for '''... result needs to be fixed
 #for actual literals
 _perl -0777 -pe "s/(''')(.*?)(''')/\/\*\2\*\//sg"
+
 #_sed "s/\('''\)\(.*\)\('''\)/\\\*\2\*\//g"
 #_sed "s/\('''\)\(.*\)\('''\)/test/g"
 
