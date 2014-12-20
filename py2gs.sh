@@ -12,7 +12,14 @@
 #if any transformation is wrong
 #or unwanted just change it or comment it out
 
-FILE=$1
+COMPILE="false"
+if [ "$1" == "c" ]
+then
+    COMPILE="true"
+    FILE=$2
+else
+    FILE=$1
+fi
 
 rm -f $FILE.tmp
 cat $FILE >> $FILE.tmp
@@ -49,9 +56,9 @@ _sed 's/\(.*\)def __init__(self, \*\*kwargs):/\1init/'
 _sed 's/\(.*def.*(\)self,\s*\(.*\)/\1\2/'
 
 #removes self. calls
-_sed 's/\(.*\s\)self.\(.*\)/\1\2/'
-_sed 's/\(.*(\)self.\(.*\)/\1\2/'
-_sed 's/\(.*,\)self.\(.*\)/\1\2/'
+_sed 's/\(.*\s\)self\.\(.*\)/\1\2/'
+_sed 's/\(.*(\)self\.\(.*\)/\1\2/'
+_sed 's/\(.*,\)self\.\(.*\)/\1\2/'
 
 #replace # comments with // comments
 _sed 's/\([\s]*\)#\(.*\)/\1\/\/\2/'
@@ -91,7 +98,8 @@ _perl -0777 -pe "s/(''')(.*?)(''')/\/\*\2\*\//sg"
 
 #convert 'literal' to "literal"
 #summary: very greedy
-_sed 's/\(.*\)\x27\(.*\)\x27\(.*\)/\1"\2"\3/'
+#_sed 's/\(.*\)\x27\(.*\)\x27\(.*\)/\1"\2"\3/g'
+_perl -pe 's/\x27(.*?)\x27/"\1"/g'
 
 #add var token before all assignment statements
 #that's by far too greedy, but most assignments tend
@@ -111,7 +119,7 @@ _sed 's/True/true/g'
 #static typing syntax...
 #defaulting everything to string
 #obviously there's manual fixing needed
-_sed 's/\(.*def.*(\)\([[:alnum:]]\+\)\(,.*\)/\1\2 : string \3/'
+_sed 's/\(.*\sdef\s.*(\)\([[:alnum:]]\+\)\(,.*\)/\1\2 : string \3/'
 
 #add [indent=4] at beginning of file
 sed -i '1s/^/\[indent=4\]\n/' $FILE.tmp
@@ -120,5 +128,14 @@ sed -i '1s/^/\[indent=4\]\n/' $FILE.tmp
 sed -i 'N;/^\n$/d;P;D' $FILE.tmp
 
 cat $FILE.tmp
+
+if [ "$COMPILE" == "true" ]
+then
+    cp $FILE.tmp $FILE.tmp.gs
+    valac --pkg gtk+-3.0 $FILE.tmp.gs
+    rm -f $FILE.tmp.gs  
+fi
+
 rm -f $FILE.tmp
+
 
