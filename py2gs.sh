@@ -23,6 +23,12 @@ function _sed
 	mv $FILE.tmp2 $FILE.tmp
 }
 
+function _perl
+{
+	cat $FILE.tmp | perl "$@" > $FILE.tmp2
+	mv $FILE.tmp2 $FILE.tmp
+}
+
 #removes import statement
 _sed '/import\s.*/d'
 
@@ -74,8 +80,11 @@ _sed 's/\(while\s.*\):/\1/'
 #this assumes that comments is the most common
 #use case for '''... result needs to be fixed
 #for actual literals
+_perl -0777 -pe "s/(''')(.*)(''')/\/\*\2\*\//s"
 #_sed "s/\('''\)\(.*\)\('''\)/\\\*\2\*\//g"
 #_sed "s/\('''\)\(.*\)\('''\)/test/g"
+
+#convert 'literal' to "literal"
 #summary: very greedy
 _sed 's/\(.*\)\x27\(.*\)\x27\(.*\)/\1"\2"\3/'
 
