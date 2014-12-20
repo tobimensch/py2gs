@@ -106,7 +106,7 @@ _perl -pe 's/\x27(.*?)\x27/"\1"/g'
 #to happen in declarations ... disable this if this
 #is wrong... needs manual fixing in any case
 #summary: very greedy
-_sed 's/^\(\s*\)\([[:alnum:]|_]*\)\s*=\s*/\1var \2 = new /'
+_sed 's/^\(\s*\)\([[:alnum:]|_]*\)\s*=\s*\([[:alpha:]|_]\)/\1var \2 = new \3/'
 
 
 #convert python style False True to
