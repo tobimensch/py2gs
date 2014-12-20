@@ -80,7 +80,7 @@ _sed 's/\(while\s.*\):/\1/'
 #this assumes that comments is the most common
 #use case for '''... result needs to be fixed
 #for actual literals
-_perl -0777 -pe "s/(''')(.*)(''')/\/\*\2\*\//s"
+_perl -0777 -pe "s/(''')(.*?)(''')/\/\*\2\*\//sg"
 #_sed "s/\('''\)\(.*\)\('''\)/\\\*\2\*\//g"
 #_sed "s/\('''\)\(.*\)\('''\)/test/g"
 
